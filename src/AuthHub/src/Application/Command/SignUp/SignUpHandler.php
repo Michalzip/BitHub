@@ -2,29 +2,30 @@
 
 namespace App\Application\Command\SignUp;
 
-use App\Domain\Exception\AlreadyExistsException;
 use App\Application\Command\SignUp\SignUpCommand;
+use App\Domain\Entity\User;
+use App\Domain\Exception\EmailAlreadyExistException;
 use App\Domain\Repository\AuthRepositoryInterface;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpFoundation\Response;
 
 class SignUpHandler
 {
-
-    public function __construct( private AuthRepositoryInterface $authRepository)
+    public function __construct(private AuthRepositoryInterface $authRepository)
     {
     }
 
-    public function SignUp(SignUpCommand $command){
+    public function SignUp(SignUpCommand $command)
+    {
 
-        $userData = $this->authRepository->createUser($command);
-        
-        $validData = $this->authRepository->checkUserExistByEmail($userData->getEmail());
+        $userData = User::create($command->credentials);
 
-            if(null !== $validData) throw new AlreadyExistsException();
+        $validData = $this->authRepository->findUserByEmail($userData->getEmail());
 
-     
+        if (null !== $validData) {
+            throw new EmailAlreadyExistException("email already exists", Response::HTTP_CONFLICT);
+        }
+
         $this->authRepository->saveUser($userData);
 
-    
     }
 }

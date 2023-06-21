@@ -2,40 +2,18 @@
 
 namespace App\Application\Command\SignUp;
 
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\FirstName;
+use App\Domain\ValueObject\HashedPassword;
+use App\Domain\ValueObject\LastName;
+use Domain\ValueObject\Credentials;
+
 class SignUpCommand
 {
+    public Credentials $credentials;
 
-    public  string $firstName;
-
-    public  $lastName;
-
-    public   $email;
-    public  $password;
-
-    public function __construct(string $firstName, string $lastName,  string $email,  string $password)
+    public function __construct(string $firstName, string $lastName, string $email, string $plainPassword)
     {
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
-        $this->email = $email;
-        $this->password = $password;
-    }
-
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-    public function getPassword(): ?string
-    {
-        return $this->password;
+        $this->credentials = new Credentials(FirstName::fromString($firstName), LastName::fromString($lastName), Email::fromString($email), HashedPassword::encode($plainPassword));
     }
 }

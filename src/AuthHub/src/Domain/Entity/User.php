@@ -3,78 +3,87 @@
 namespace App\Domain\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Domain\ValueObject\Email;
+use Domain\ValueObject\Credentials;
+use App\Domain\ValueObject\LastName;
+use App\Domain\ValueObject\FirstName;
+use App\Domain\ValueObject\HashedPassword;
 use App\Infrastructure\Repository\AuthRepository;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: AuthRepository::class)]
 class User implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: "AUTO")]
-    #[ORM\Column(type: "integer")]
-    private int $id ;
+    #[ORM\GeneratedValue(strategy: "CUSTOM")]
+    #[ORM\Column(type: "guid", unique: true)]
+    #[ORM\CustomIdGenerator(class: "Ramsey\Uuid\Doctrine\UuidGenerator")]
+    private string $id ;
 
-    #[ORM\Column(type: "string")]
-    #[Assert\NotBlank]
-    #[Assert\Length(min: 2, max: 50)]
-    private string $firstName;
+    #[ORM\Column(type: "first_name")]
+    private FirstName $firstName;
 
-    #[ORM\Column(type: "string")]
-    #[Assert\NotBlank]
-    #[Assert\Length(min: 2, max: 70)]
-    private string $lastName;
+    #[ORM\Column(type: "last_name")]
+    private LastName $lastName;
 
-    #[ORM\Column(type: "string", unique: true)]
-    #[Assert\Email]
-    private string $email;
+    #[ORM\Column(type: "email", unique: true)]
+    private Email $email;
 
-    #[ORM\Column(type: "string")]
-    private string $password;
+    #[ORM\Column(type: "hashed_password")]
+    private HashedPassword $hashedPassword;
 
-    public function getId(): ?int
+
+    public static function create(Credentials $credentials): self
+    {
+        $user = new self();
+        $user->setFirstName($credentials->firstName);
+        $user->setLastName($credentials->lastName);
+        $user->setEmail($credentials->email);
+        $user->setHashedPassword($credentials->password);
+
+        return $user;
+    }
+
+    public function createNewToken(string $password)
+    {
+        //TODO : implement
+    }
+
+    public function getId(): ?string
     {
         return $this->id;
     }
+    public function getEmail(): ?string
+    {
+        return $this->email->toString();
+    }
 
-    public function setFirstName(string $firstName): void
+    public function setFirstName(FirstName $firstName): void
     {
         $this->firstName = $firstName;
     }
 
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
 
-    public function setLastName(string $lastName): void
+    public function setLastName(LastName $lastName): void
     {
         $this->lastName = $lastName;
     }
 
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
 
-    public function setEmail(string $email): void
+
+    public function setEmail(Email $email): void
     {
         $this->email = $email;
     }
 
-    public function getEmail(): ?string
+    public function setHashedPassword(HashedPassword $hashedPassword): void
     {
-        return $this->email;
-    }
-
-    public function setPassword(string $password): void
-    {
-        $this->password = $password;
+        $this->hashedPassword = $hashedPassword;
     }
 
     public function getPassword(): ?string
     {
-        return $this->password;
+        return $this->hashedPassword;
     }
 
 

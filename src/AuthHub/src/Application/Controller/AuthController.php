@@ -2,30 +2,36 @@
 
 namespace App\Application\Controller;
 
-use App\Domain\Repository\Test;
-use  Symfony\Component\HttpFoundation\Request;
+use OpenApi\Attributes as OA;
+use App\Application\Dto\UserCreateDto;
+use App\Application\Command\SignUp\Test;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Application\Command\SignUp\SignUpCommand;
 use App\Application\Command\SignUp\SignUpHandler;
-use App\Domain\Repository\AuthRepositoryInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AuthController extends AbstractController
 {
+    #[Route('/api/sign-up', methods:['POST'])]
 
-    #[Route('/api/sign-up',methods: ['POST'])]
+    #[OA\RequestBody(
+        required: true,
+        content:  new OA\JsonContent(ref: new Model(type: UserCreateDto::class))
+    )]
 
-    public function number(Request $request, SignUpHandler $kek) : Response
+    public function signUp(#[MapRequestPayload] UserCreateDto $user, SignUpHandler $handler): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
 
-        $command = new SignUpCommand($data["firstName"],$data["lastName"],$data["email"],$data["password"]);
+        $handler->signUp(new SignUpCommand($user->firstName, $user->lastName, $user->email, $user->password));
 
-        $jd = $kek->signUp($command); 
-
-        return new Response("add");
-
-        
+        return new JsonResponse(
+            "user successfully created.",
+            Response::HTTP_CREATED
+        );
     }
+
 }
