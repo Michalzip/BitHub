@@ -2,10 +2,10 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Application\Command\SignUp\SignUpCommand;
 use App\Domain\Entity\User;
-use App\Domain\Repository\AuthRepositoryInterface;
+use App\Domain\ValueObject\Email;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Domain\Repository\AuthRepositoryInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AuthRepository implements AuthRepositoryInterface
@@ -14,13 +14,13 @@ class AuthRepository implements AuthRepositoryInterface
     {
     }
 
-    public function findUserByEmail(string $email): ?User
+    public function findUserByEmail(Email $email): ?User
     {
         return $this->entityManager->createQueryBuilder()
             ->select('u')
             ->from(User::class, 'u')
             ->where('u.email = :email')
-            ->setParameters(['email' => $email])
+            ->setParameters(['email' => $email->toString()])
             ->getQuery()->getOneOrNullResult();
     }
 

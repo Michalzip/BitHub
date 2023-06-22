@@ -2,7 +2,6 @@
 
 namespace App\Domain\Exception\Common;
 
-class AuthException extends \Exception
+class DomainException extends \Exception
 {
-
 }

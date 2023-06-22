@@ -2,7 +2,7 @@
 
 namespace App\Application\Dto;
 
-class UserCreateDto
+class UserSignUpDto
 {
     public string $firstName;
 

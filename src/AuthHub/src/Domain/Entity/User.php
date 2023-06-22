@@ -4,15 +4,14 @@ namespace App\Domain\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Domain\ValueObject\Email;
-use Domain\ValueObject\Credentials;
 use App\Domain\ValueObject\LastName;
 use App\Domain\ValueObject\FirstName;
 use App\Domain\ValueObject\HashedPassword;
+use App\Application\Command\SignUp\SignUpCommand;
 use App\Infrastructure\Repository\AuthRepository;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: AuthRepository::class)]
-class User implements PasswordAuthenticatedUserInterface
+class User
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
@@ -33,29 +32,34 @@ class User implements PasswordAuthenticatedUserInterface
     private HashedPassword $hashedPassword;
 
 
-    public static function create(Credentials $credentials): self
+    public static function create(SignUpCommand $credentials): self
     {
         $user = new self();
         $user->setFirstName($credentials->firstName);
         $user->setLastName($credentials->lastName);
         $user->setEmail($credentials->email);
-        $user->setHashedPassword($credentials->password);
+        $user->setHashedPassword($credentials->hashedPassword);
 
         return $user;
     }
 
-    public function createNewToken(string $password)
+    public function createToken(string $password)
     {
         //TODO : implement
+    }
+
+    public function verifyPassword(string $hashedPassword, string $plainPassword): bool
+    {
+        return HashedPassword::fromString($hashedPassword)->match($plainPassword);
     }
 
     public function getId(): ?string
     {
         return $this->id;
     }
-    public function getEmail(): ?string
+    public function getEmail(): ?Email
     {
-        return $this->email->toString();
+        return $this->email;
     }
 
     public function setFirstName(FirstName $firstName): void
@@ -69,8 +73,6 @@ class User implements PasswordAuthenticatedUserInterface
         $this->lastName = $lastName;
     }
 
-
-
     public function setEmail(Email $email): void
     {
         $this->email = $email;
@@ -81,7 +83,7 @@ class User implements PasswordAuthenticatedUserInterface
         $this->hashedPassword = $hashedPassword;
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): ?HashedPassword
     {
         return $this->hashedPassword;
     }

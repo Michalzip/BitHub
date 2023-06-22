@@ -2,13 +2,17 @@
 
 namespace App\Infrastructure\EventSubscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Throwable;
+use Domain\Exception\UserNotFound;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelEvents;
+use App\Domain\Exception\Common\DomainException;
+use App\Domain\Exception\InvalidAuthCredentials;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Domain\Exception\EmailAlreadyExistException;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -42,7 +46,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
                 'error' => [
                     'title' => \str_replace('\\', '.', $exception::class),
                     'detail' => $this->getExceptionMessage($exception),
-                    'code' => $exception->getCode(),
+                    'code' => $this->determineStatusCode($exception),
                 ],
             ];
     }
@@ -59,12 +63,15 @@ class ExceptionSubscriber implements EventSubscriberInterface
             }
         }
 
-        if ($exception instanceof HttpExceptionInterface) {
-            return $exception->getStatusCode();
-        }
+        $statusCode = match (true) {
+            $exception instanceof UserNotFound => Response::HTTP_NOT_FOUND,
+            $exception instanceof EmailAlreadyExistException => Response::HTTP_CONFLICT,
+            $exception instanceof InvalidAuthCredentials => Response::HTTP_UNAUTHORIZED,
+            default =>  Response::HTTP_INTERNAL_SERVER_ERROR
+        };
 
         // Default status code is always 500
-        return Response::HTTP_INTERNAL_SERVER_ERROR;
+        return $statusCode;
     }
 
     private function getExceptionMessage(Throwable $exception): string

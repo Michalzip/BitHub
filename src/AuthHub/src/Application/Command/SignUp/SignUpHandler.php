@@ -14,15 +14,15 @@ class SignUpHandler
     {
     }
 
-    public function SignUp(SignUpCommand $command)
+    public function handle(SignUpCommand $command)
     {
 
-        $userData = User::create($command->credentials);
+        $userData = User::create($command);
 
-        $validData = $this->authRepository->findUserByEmail($userData->getEmail());
+        $user = $this->authRepository->findUserByEmail($userData->getEmail());
 
-        if (null !== $validData) {
-            throw new EmailAlreadyExistException("email already exists", Response::HTTP_CONFLICT);
+        if (null !== $user) {
+            throw new EmailAlreadyExistException("email already exists");
         }
 
         $this->authRepository->saveUser($userData);

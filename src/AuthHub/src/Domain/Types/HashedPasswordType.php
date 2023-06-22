@@ -6,15 +6,17 @@ use Throwable;
 use Doctrine\DBAL\Types\StringType;
 use App\Domain\ValueObject\HashedPassword;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\ConversionException;;
+use Doctrine\DBAL\Types\ConversionException;
 
-class HashedPasswordType  extends StringType
+;
+
+class HashedPasswordType extends StringType
 {
     private const TYPE = 'hashed_password';
 
     public function getName()
     {
-        return SELF::TYPE;
+        return self::TYPE;
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
@@ -31,7 +33,7 @@ class HashedPasswordType  extends StringType
         return $value->toString();
     }
 
- 
+
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         if (null === $value || $value instanceof HashedPassword) {
@@ -39,7 +41,7 @@ class HashedPasswordType  extends StringType
         }
 
         try {
-            $hashedPassword = HashedPassword::fromHash($value);
+            $hashedPassword = HashedPassword::fromString($value);
         } catch (Throwable) {
             throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateTimeFormatString());
         }
@@ -47,4 +49,3 @@ class HashedPasswordType  extends StringType
         return $hashedPassword;
     }
 }
-
