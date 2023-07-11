@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Application\Cqrs\Query\Auth\GetToken;
+namespace App\Application\CQRS\Query\Auth\GetToken;
 
 use App\Domain\Repository\AuthRepositoryInterface;
 use App\Shared\Application\Query\QueryHandlerInterface;
-use App\Application\Cqrs\Query\Auth\GetToken\GetTokenQuery;
+use App\Application\CQRS\Query\Auth\GetToken\GetTokenQuery;
 use App\Domain\IService\Auth\AuthenticationProviderInterace;
 
 class GetTokenHandler implements QueryHandlerInterface

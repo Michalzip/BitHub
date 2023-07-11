@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Application\Cqrs\Command\SignIn;
+namespace App\Application\CQRS\Command\SignIn;
 
 use App\Domain\Exception\UserNotFound;
 use App\Domain\Exception\InvalidAuthCredentials;
 use App\Domain\Repository\AuthRepositoryInterface;
-use App\Application\Cqrs\Command\SignIn\SignInCommand;
+use App\Application\CQRS\Command\SignIn\SignInCommand;
 use App\Shared\Application\Command\CommandHandlerInterface;
 
 class SignInHandler implements CommandHandlerInterface
@@ -21,7 +21,7 @@ class SignInHandler implements CommandHandlerInterface
         $validPassword = $user->verifyPassword($user->getPassword(), $command->hashedPassword);
 
         if(!$validPassword) {
-            throw new InvalidAuthCredentials("invalid credentialss");
+            throw new InvalidAuthCredentials("invalid credentials");
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Cqrs\Command\SignIn;
+namespace App\Application\CQRS\Command\SignIn;
 
 use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\HashedPassword;

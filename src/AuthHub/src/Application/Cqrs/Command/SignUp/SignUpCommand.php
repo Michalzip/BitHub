@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Application\Cqrs\Command\SignUp;
+namespace App\Application\CQRS\Command\SignUp;
 
 use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\FirstName;
 use App\Domain\ValueObject\HashedPassword;
 use App\Domain\ValueObject\LastName;
 use App\Shared\Application\Command\CommandInterface;
+
 class SignUpCommand implements CommandInterface
 {
     public readonly FirstName $firstName;

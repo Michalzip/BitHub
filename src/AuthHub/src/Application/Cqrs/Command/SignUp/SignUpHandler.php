@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Application\Cqrs\Command\SignUp;
+namespace App\Application\CQRS\Command\SignUp;
 
-use App\Application\Cqrs\Command\SignUp\SignUpCommand;
+use App\Application\CQRS\Command\SignUp\SignUpCommand;
 use App\Domain\Entity\User;
 use App\Domain\Exception\EmailAlreadyExistException;
 use App\Domain\Repository\AuthRepositoryInterface;

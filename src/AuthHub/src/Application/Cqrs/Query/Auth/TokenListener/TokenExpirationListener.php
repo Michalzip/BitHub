@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Cqrs\Query\Auth\TokenListener;
+namespace App\Application\CQRS\Query\Auth\TokenListener;
 
 use App\Domain\Repository\AuthRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

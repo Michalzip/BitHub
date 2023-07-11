@@ -5,9 +5,9 @@ namespace App\Infrastructure\ApiPlatform\State\Processor;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Shared\Infrastructure\Bus\Query\QueryBus;
-use App\Application\Cqrs\Command\SignIn\SignInCommand;
+use App\Application\CQRS\Command\SignIn\SignInCommand;
 use App\Shared\Application\Command\CommandBusInterface;
-use App\Application\Cqrs\Query\Auth\GetToken\GetTokenQuery;
+use App\Application\CQRS\Query\Auth\GetToken\GetTokenQuery;
 use App\Infrastructure\ApiPlatform\Output\JWT;
 
 final readonly class UserSignInProcessor implements ProcessorInterface

@@ -42,8 +42,8 @@ services:
           - '@messenger.bus.query'
 
  
-  App\Application\Cqrs\Query\Auth\TokenListener\TokenExpirationListener:
-    class: App\Application\Cqrs\Query\Auth\TokenListener\TokenExpirationListener
+  App\Application\CQRS\Query\Auth\TokenListener\TokenExpirationListener:
+    class: App\Application\CQRS\Query\Auth\TokenListener\TokenExpirationListener
     tags:
       - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_authenticated, method: onAuthenticatedAccess }
       - { name: kernel.event_listener, event: kernel.response, method: onAuthenticatedResponse }

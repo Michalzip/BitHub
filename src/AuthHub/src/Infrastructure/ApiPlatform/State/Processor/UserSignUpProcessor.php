@@ -6,7 +6,7 @@ use App\Domain\Entity\User;
 use Webmozart\Assert\Assert;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Application\Cqrs\Command\SignUp\SignUpCommand;
+use App\Application\CQRS\Command\SignUp\SignUpCommand;
 use App\Shared\Application\Command\CommandBusInterface;
 use Symfony\Component\Messenger\Envelope;
 
