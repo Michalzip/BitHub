@@ -8,14 +8,13 @@ use Doctrine\DBAL\Types\StringType;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
-class EmailType  extends StringType
+class EmailType extends StringType
 {
-
     private const TYPE = 'email';
-    
+
     public function getName()
     {
-        return SELF::TYPE;
+        return self::TYPE;
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
@@ -32,7 +31,7 @@ class EmailType  extends StringType
         return $value->toString();
     }
 
- 
+
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         if (null === $value || $value instanceof Email) {
@@ -42,6 +41,7 @@ class EmailType  extends StringType
         try {
             $email = Email::fromString($value);
         } catch (Throwable) {
+
             throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateTimeFormatString());
         }
 

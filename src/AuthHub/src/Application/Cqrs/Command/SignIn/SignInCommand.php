@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Application\Command\SignIn;
+namespace App\Application\Cqrs\Command\SignIn;
 
 use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\HashedPassword;
+use App\Shared\Application\Command\CommandInterface;
 
-class SignInCommand
+class SignInCommand implements CommandInterface
 {
     public readonly Email $email;
 
@@ -16,15 +17,6 @@ class SignInCommand
         $this->email = Email::fromString($email);
 
         $this->hashedPassword = HashedPassword::fromString($password);
-    }
-    public function getEmail(): Email
-    {
-        return $this->email;
-    }
-
-    public function getHashedPassword(): HashedPassword
-    {
-        return $this->hashedPassword;
     }
 
 }

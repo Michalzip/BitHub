@@ -3,31 +3,58 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\User;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\EntityManager;
 use App\Domain\ValueObject\Email;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use App\Domain\Repository\AuthRepositoryInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
-class AuthRepository implements AuthRepositoryInterface
+class AuthRepository extends ServiceEntityRepository implements AuthRepositoryInterface
 {
-    public function __construct(private EntityManagerInterface $entityManager, private UserPasswordHasherInterface $passwordHasher)
+    private EntityManager $em;
+    public function __construct(ManagerRegistry $registry)
     {
+        parent::__construct($registry, User::class);
+        $this->em = $this->getEntityManager();
     }
 
-    public function findUserByEmail(Email $email): ?User
+    public function findUserByEmail(string $email): ?User
     {
-        return $this->entityManager->createQueryBuilder()
+        return   $this->em->createQueryBuilder()
             ->select('u')
             ->from(User::class, 'u')
             ->where('u.email = :email')
-            ->setParameters(['email' => $email->toString()])
+            ->setParameters(['email' => $email])
             ->getQuery()->getOneOrNullResult();
     }
 
+
+    public function getCredentialsByEmail(Email $email): array
+    {
+
+        $qb = $this->em
+        ->createQueryBuilder()
+        ->select('u')
+        ->from(User::class, 'u')
+        ->where('u.email = :email')
+        ->setParameter('email', $email->toString());
+
+        $user = $qb->getQuery()->getOneOrNullResult(AbstractQuery::HYDRATE_ARRAY);
+
+        return [
+            $user['id'],
+            $user['email'],
+            $user['hashedPassword']
+
+        ];
+    }
+
+
     public function saveUser(User $user): void
     {
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $this->em->persist($user);
+        $this->em->flush();
     }
 
 }

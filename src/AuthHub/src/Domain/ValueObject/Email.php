@@ -3,8 +3,9 @@
 namespace App\Domain\ValueObject;
 
 use Assert\Assertion;
+use JsonSerializable;
 
-class Email
+class Email implements JsonSerializable, \Stringable
 {
     private function __construct(private readonly string $email)
     {
@@ -20,5 +21,15 @@ class Email
     public function toString(): string
     {
         return $this->email;
+    }
+
+    public function __toString(): string
+    {
+        return $this->email;
+    }
+
+    public function jsonSerialize(): string
+    {
+        return $this->toString();
     }
 }

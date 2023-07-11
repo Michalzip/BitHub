@@ -7,7 +7,7 @@ use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\LastName;
 use App\Domain\ValueObject\FirstName;
 use App\Domain\ValueObject\HashedPassword;
-use App\Application\Command\SignUp\SignUpCommand;
+use App\Application\Cqrs\Command\SignUp\SignUpCommand;
 use App\Infrastructure\Repository\AuthRepository;
 
 #[ORM\Entity(repositoryClass: AuthRepository::class)]
@@ -32,36 +32,6 @@ class User
     private HashedPassword $hashedPassword;
 
 
-    public static function create(SignUpCommand $credentials): self
-    {
-        $user = new self();
-        $user->setFirstName($credentials->firstName);
-        $user->setLastName($credentials->lastName);
-        $user->setEmail($credentials->email);
-        $user->setHashedPassword($credentials->hashedPassword);
-
-        return $user;
-    }
-
-    public function createToken(string $password)
-    {
-        //TODO : implement
-    }
-
-    public function verifyPassword(string $hashedPassword, string $plainPassword): bool
-    {
-        return HashedPassword::fromString($hashedPassword)->match($plainPassword);
-    }
-
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
-    public function getEmail(): ?Email
-    {
-        return $this->email;
-    }
-
     public function setFirstName(FirstName $firstName): void
     {
         $this->firstName = $firstName;
@@ -82,11 +52,31 @@ class User
     {
         $this->hashedPassword = $hashedPassword;
     }
+    public function verifyPassword(string $hashedPassword, string $plainPassword): bool
+    {
+        return HashedPassword::fromString($hashedPassword)->match($plainPassword);
+    }
 
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+    public function getEmail(): ?Email
+    {
+        return $this->email;
+    }
+
+    public function getFirstName(): ?FirstName
+    {
+        return $this->firstName;
+    }
+
+    public function getLastName(): ?LastName
+    {
+        return $this->lastName;
+    }
     public function getPassword(): ?HashedPassword
     {
         return $this->hashedPassword;
     }
-
-
 }
