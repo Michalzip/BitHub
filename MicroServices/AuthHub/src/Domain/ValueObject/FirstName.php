@@ -6,7 +6,6 @@ use Assert\Assertion;
 
 class FirstName
 {
-
     public function __construct(private readonly string $firstName)
     {
     }
