@@ -2,8 +2,6 @@
 
 namespace App\Infrastructure\ApiPlatform\State\Processor;
 
-use Shared\Application\Test;
-
 use ApiPlatform\Metadata\Operation;
 
 use ApiPlatform\State\ProcessorInterface;
