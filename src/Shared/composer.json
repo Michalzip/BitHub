@@ -1,0 +1,14 @@
+{
+    "name": "shared/library",
+    "description": "Shared code between microservices",
+   
+    "autoload": {
+      "psr-4": {
+        "Shared\\": "/"
+      }
+    },
+    "require": {
+      "php": ">=8.1",
+      "symfony/messenger": "6.3.*"
+    }
+}
