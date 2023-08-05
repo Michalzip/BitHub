@@ -2,32 +2,54 @@
 
 namespace App\Infrastructure\ApiPlatform\State\Processor;
 
+use App\Domain\ValueObject\Email;
 use ApiPlatform\Metadata\Operation;
+use App\Domain\Entity\User\Model\User;
+
 use ApiPlatform\State\ProcessorInterface;
-use Shared\Infrastructure\Bus\Query\QueryBus;
-use App\Application\CQRS\Command\SignIn\SignInCommand;
-use Shared\Application\Command\CommandBusInterface;
-use App\Application\CQRS\Query\Auth\GetToken\GetTokenQuery;
+use App\Domain\ValueObject\HashedPassword;
 use App\Infrastructure\ApiPlatform\Output\JWT;
+use Shared\Domain\IBus\IQuery\QueryBusInterface;
+use App\Application\CQRS\Query\Auth\GetUser\GetUser;
+use Shared\Domain\IBus\ICommand\CommandBusInterface;
+use Shared\Infrastructure\Service\Redis\RedisClient;
+use App\Application\CQRS\Command\SignIn\SignInCommand;
+use App\Application\CQRS\Query\Auth\GetToken\GetTokenQuery;
 
 final readonly class UserSignInProcessor implements ProcessorInterface
 {
     public function __construct(
         private readonly CommandBusInterface $commandBus,
-        private readonly QueryBus $queryBus,
+        private readonly QueryBusInterface $queryBus,
+        private readonly RedisClient $redisClient
     ) {
     }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): JWT
     {
 
-        $command = new SignInCommand($data->email, $data->password);
+        //check valid data
+        $this->commandBus->dispatch(new SignInCommand(new Email($data->email), new HashedPassword($data->password)));
 
-        $this->commandBus->dispatch($command);
+        $jwtTokenString = $this->queryBus->ask(new GetTokenQuery(new Email($data->email)));
 
-        $jwtToken = $this->queryBus->ask(new GetTokenQuery($data->email));
+        /** @var User $user */
+        $user = $this->queryBus->ask(new GetUser(new Email($data->email)));
 
-        return JWT::formJwtTokenString($jwtToken);
+
+        $userPersitenceData = [
+            'id'=>$user->getId()->value,
+            'email'=>$user->getEmail()->value,
+            'firstName'=>$user->getFirstName()->value,
+            'lastName'=>$user->getLastName()->value,
+        ];
+
+        $this->redisClient->set($user->getEmail()->value, $userPersitenceData);
+
+        $this->redisClient->set("token", $jwtTokenString);
+
+
+        return  JWT::formJwtTokenString($jwtTokenString);
 
     }
 }

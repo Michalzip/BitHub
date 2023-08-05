@@ -2,12 +2,14 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Entity\User;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
+
 use App\Domain\ValueObject\Email;
+use App\Domain\Entity\User\Model\User;
+
 use Doctrine\Persistence\ManagerRegistry;
-use App\Domain\Repository\AuthRepositoryInterface;
+use App\Domain\Entity\User\Repository\AuthRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 class AuthRepository extends ServiceEntityRepository implements AuthRepositoryInterface
@@ -19,14 +21,20 @@ class AuthRepository extends ServiceEntityRepository implements AuthRepositoryIn
         $this->em = $this->getEntityManager();
     }
 
-    public function findUserByEmail(string $email): ?User
+    public function findUserByEmail(Email $email): ?User
     {
+
         return   $this->em->createQueryBuilder()
             ->select('u')
             ->from(User::class, 'u')
-            ->where('u.email = :email')
-            ->setParameters(['email' => $email])
+            //assign in User class email property from Email value propery class
+            ->where(sprintf('%s.email.value = :email', 'u'))
+            ->setParameters(['email' => $email->value])
             ->getQuery()->getOneOrNullResult();
+
+
+
+
     }
 
 
@@ -37,15 +45,17 @@ class AuthRepository extends ServiceEntityRepository implements AuthRepositoryIn
         ->createQueryBuilder()
         ->select('u')
         ->from(User::class, 'u')
-        ->where('u.email = :email')
-        ->setParameter('email', $email->toString());
+        ->where(sprintf('%s.email.value = :email', 'u'))
+        ->setParameter('email', $email->value);
 
         $user = $qb->getQuery()->getOneOrNullResult(AbstractQuery::HYDRATE_ARRAY);
 
+
         return [
-            $user['id'],
-            $user['email'],
-            $user['hashedPassword']
+            $user['id.value'],
+            $user['email.value'],
+            $user['firstName.value'],
+            $user['lastName.value']
 
         ];
     }

@@ -3,3 +3,6 @@ lexik_jwt_authentication:
     public_key: '%env(resolve:JWT_PUBLIC_KEY)%'
     pass_phrase: '%env(JWT_PASSPHRASE)%'
     user_identity_field: email
+    api_platform:
+        check_path: /sign-in
+        username_path: email

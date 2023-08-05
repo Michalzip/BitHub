@@ -2,11 +2,21 @@
 
 namespace App\Infrastructure\ApiPlatform\State\Processor;
 
-use ApiPlatform\Metadata\Operation;
 
+
+use App\Domain\ValueObject\Email;
+
+use ApiPlatform\Metadata\Operation;
+use App\Domain\ValueObject\LastName;
+
+use App\Domain\ValueObject\FirstName;
+
+use App\Domain\Entity\User\Model\User;
 use ApiPlatform\State\ProcessorInterface;
-use Shared\Application\Command\CommandBusInterface;
+use App\Domain\ValueObject\HashedPassword;
+use Shared\Domain\IBus\ICommand\CommandBusInterface;
 use App\Application\CQRS\Command\SignUp\SignUpCommand;
+use App\Infrastructure\ApiPlatform\Resource\AuthenticationResource;
 
 final readonly class UserSignUpProcessor implements ProcessorInterface
 {
@@ -16,8 +26,10 @@ final readonly class UserSignUpProcessor implements ProcessorInterface
     }
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
-        $command = new SignUpCommand($data->firstName, $data->lastName, $data->email, $data->password);
+        $command = new SignUpCommand(new FirstName($data->firstName), new LastName($data->lastName), new Email($data->email), new HashedPassword($data->password));
+
 
         $this->commandBus->dispatch($command);
+
     }
 }

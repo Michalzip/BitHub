@@ -2,32 +2,37 @@
 
 namespace App\Application\CQRS\Command\SignUp;
 
-use App\Application\CQRS\Command\SignUp\SignUpCommand;
-use App\Domain\Entity\User;
+use App\Domain\Entity\User\Model\User;
+use App\Domain\ValueObject\HashedPassword;
 use App\Domain\Exception\EmailAlreadyExistException;
-use App\Domain\Repository\AuthRepositoryInterface;
-use Shared\Application\Command\CommandHandlerInterface;
+use App\Application\CQRS\Command\SignUp\SignUpCommand;
+use Shared\Domain\IBus\ICommand\CommandHandlerInterface;
+use App\Domain\Entity\User\Repository\AuthRepositoryInterface;
 
-final readonly class SignUpHandler implements CommandHandlerInterface
+final class SignUpHandler implements CommandHandlerInterface
 {
     public function __construct(private AuthRepositoryInterface $authRepository)
     {
     }
-    public function __invoke(SignUpCommand $command): void
+    public function __invoke(SignUpCommand $command): User
     {
         $user = $this->authRepository->findUserByEmail($command->email);
 
         if (null !== $user) {
-            throw new EmailAlreadyExistException("email already exists");
+            throw new EmailAlreadyExistException();
         }
 
-        $userData = new User();
-        $userData->setFirstName($command->firstName);
-        $userData->setLastName($command->lastName);
-        $userData->setEmail($command->email);
-        $userData->setHashedPassword($command->hashedPassword);
+        $userData = new User(
+            $command->firstName,
+            $command->lastName,
+            $command->email,
+            HashedPassword::encode($command->hashedPassword->value)
+        );
+
 
         $this->authRepository->saveUser($userData);
+
+        return $userData;
 
     }
 }

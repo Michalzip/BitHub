@@ -3,14 +3,12 @@
 namespace App\Application\CQRS\Query\Auth\GetToken;
 
 use App\Domain\ValueObject\Email;
-use Shared\Application\Query\QueryInterface;
+use Shared\Domain\IBus\IQuery\QueryInterface;
 
-class GetTokenQuery implements QueryInterface
+final class GetTokenQuery implements QueryInterface
 {
-    public Email $email;
-
-    public function __construct(string $email)
+    public function __construct(public Email $email)
     {
-        $this->email = Email::fromString($email);
+
     }
 }

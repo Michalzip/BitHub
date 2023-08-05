@@ -1,17 +1,23 @@
 security:
+    enable_authenticator_manager: true
+
+    providers:
+        user:
+          id: 'Shared\Infrastructure\Service\Auth\AuthProvider'
+
+    firewalls:
+        api:
+            pattern:   ^/
+            stateless: true
+            jwt: ~
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
-    providers:
-        users:
-            id: 'App\Infrastructure\Service\Auth\AuthProvider'
+    
 
-    firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-
+    
+  
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -21,8 +27,8 @@ security:
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
-    access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+    # access_control:
+    #     - { path: /, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

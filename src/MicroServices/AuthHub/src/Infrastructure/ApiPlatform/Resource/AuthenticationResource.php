@@ -2,16 +2,19 @@
 
 namespace App\Infrastructure\ApiPlatform\Resource;
 
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
-use App\Application\Dto\UserSignUpDto;
 use App\Application\Dto\UserSignInDto;
+use App\Application\Dto\UserSignUpDto;
+use App\Domain\Entity\User\Model\User;
+use App\Infrastructure\ApiPlatform\State\TestProvider;
 use App\Infrastructure\ApiPlatform\State\Processor\UserSignInProcessor;
 use App\Infrastructure\ApiPlatform\State\Processor\UserSignUpProcessor;
 
 #[ApiResource(
-    shortName: 'Authentication',
+    shortName: 'Authentication Operation',
     operations: [
 
     new Post(
@@ -27,19 +30,8 @@ use App\Infrastructure\ApiPlatform\State\Processor\UserSignUpProcessor;
         input: UserSignUpDto::class,
         processor: UserSignUpProcessor::class,
     ),
-
     ],
 )]
 final class AuthenticationResource
 {
-    public function __construct(
-        #[ApiProperty(identifier: true, readable: false, writable: false)]
-
-        public ?string $firstName = null,
-        public ?string $lastName = null,
-        public ?string $email = null,
-        public ?string $password = null,
-    ) {
-
-    }
 }
