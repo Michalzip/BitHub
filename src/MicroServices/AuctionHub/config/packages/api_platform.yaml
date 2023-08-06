@@ -1,0 +1,17 @@
+api_platform:
+    show_webby: false
+    enable_swagger_ui: true
+    enable_re_doc: false
+    mapping:
+        paths:
+            - '%kernel.project_dir%/src/Infrastructure/ApiPlatform/Resource/'
+    swagger:
+         api_keys:
+             JWT:
+                name: Authorization
+                type: header
+                
+        
+    patch_formats:
+        json:
+            - 'application/merge-patch+json'
