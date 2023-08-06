@@ -12,7 +12,7 @@ use ApiPlatform\Metadata\ApiResource;
     new Post(
         "/auction/price-suggestion",
         openapiContext: ['summary' => 'the user proposes a price for the auction'],
-       
+        //w
     )
     ],
 )]
