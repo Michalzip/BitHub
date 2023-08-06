@@ -26,7 +26,7 @@ final class PriceSuggestionHandler implements CommandHandlerInterface
 
 
         $newBid = new Bid(
-            User::toModel($authUser),
+            User::fromAuth($authUser),
             new BidAmount(20)
         );
 

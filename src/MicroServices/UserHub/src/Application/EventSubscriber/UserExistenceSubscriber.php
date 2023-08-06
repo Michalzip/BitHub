@@ -31,7 +31,7 @@ class UserExistenceSubscriber implements EventSubscriberInterface
 
         if($findedUser==null) {
 
-            $this->userRepository->saveUser(User::toModel($authUser));
+            $this->userRepository->saveUser(User::fromAuth($authUser));
         }
     }
 

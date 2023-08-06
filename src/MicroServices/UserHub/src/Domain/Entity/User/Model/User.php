@@ -38,7 +38,7 @@ class User implements UserInterface
 
 
 
-    public static function toModel(Auth $authUser): User
+    public static function fromAuth(Auth $authUser): User
     {
 
         return new self($authUser->getId(), $authUser->getEmail(), $authUser->getFirstName(), $authUser->getLastName());
