@@ -2,21 +2,14 @@
 
 namespace App\Infrastructure\ApiPlatform\State\Processor;
 
-
-
 use App\Domain\ValueObject\Email;
-
 use ApiPlatform\Metadata\Operation;
 use App\Domain\ValueObject\LastName;
-
 use App\Domain\ValueObject\FirstName;
-
-use App\Domain\Entity\User\Model\User;
 use ApiPlatform\State\ProcessorInterface;
 use App\Domain\ValueObject\HashedPassword;
 use Shared\Domain\IBus\ICommand\CommandBusInterface;
 use App\Application\CQRS\Command\SignUp\SignUpCommand;
-use App\Infrastructure\ApiPlatform\Resource\AuthenticationResource;
 
 final readonly class UserSignUpProcessor implements ProcessorInterface
 {

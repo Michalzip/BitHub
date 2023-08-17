@@ -30,7 +30,6 @@ class UserExistenceSubscriber implements EventSubscriberInterface
         $findedUser = $this->userRepository->findUserByEmail($authUser->getEmail());
 
         if($findedUser==null) {
-
             $this->userRepository->saveUser(User::fromAuth($authUser));
         }
     }

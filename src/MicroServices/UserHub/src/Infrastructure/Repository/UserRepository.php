@@ -4,9 +4,7 @@ namespace UserService\Infrastructure\Repository;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
-use UserService\Domain\Entity\Bid\Model\Bid;
 use UserService\Domain\Entity\User\Model\User;
-
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use UserService\Domain\Entity\User\Repository\UserRepositoryInterface;
 

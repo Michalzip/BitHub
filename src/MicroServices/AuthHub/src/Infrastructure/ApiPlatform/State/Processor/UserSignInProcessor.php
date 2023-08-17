@@ -5,7 +5,6 @@ namespace App\Infrastructure\ApiPlatform\State\Processor;
 use App\Domain\ValueObject\Email;
 use ApiPlatform\Metadata\Operation;
 use App\Domain\Entity\User\Model\User;
-
 use ApiPlatform\State\ProcessorInterface;
 use App\Domain\ValueObject\HashedPassword;
 use App\Infrastructure\ApiPlatform\Output\JWT;

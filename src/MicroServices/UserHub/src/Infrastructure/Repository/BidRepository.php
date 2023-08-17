@@ -17,6 +17,39 @@ class BidRepository extends ServiceEntityRepository implements BidRepositoryInte
         $this->em = $this->getEntityManager();
     }
 
+    public function findBid($userId, $auctionId): ?Bid
+    {
+        return   $this->em->createQueryBuilder()
+        ->select('u')
+        ->from(Bid::class, 'u')
+        ->leftJoin('u.user', 'a')
+        ->andWhere('a.id = :userId')
+        ->andWhere('u.bidAuctionId.value = :auctionId')
+        ->setParameters(['userId' => $userId,'auctionId' => $auctionId])
+        ->getQuery()->getOneOrNullResult();
+    }
+
+    public function updatePiercedStatus($auctionId)
+    {
+
+        $maxBidAmount = $this->createQueryBuilder('b')
+            ->select('MAX(b.amount.value)')
+            ->where('b.bidAuctionId.value = :auctionId')
+            ->setParameter('auctionId', $auctionId)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $this->createQueryBuilder('b')
+            ->update()
+            ->set('b.pierced.value', 'true')
+            ->andWhere('b.amount.value < :maxBidAmount')
+            ->andWhere('b.bidAuctionId.value = :auctionId')
+            ->setParameter('auctionId', $auctionId)
+            ->setParameter('maxBidAmount', $maxBidAmount)
+            ->getQuery()
+            ->execute();
+    }
+
     public function saveBid(Bid $user): void
     {
         $this->em->merge($user);

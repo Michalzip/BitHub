@@ -1,12 +1,10 @@
-imports:
-    - { resource: 'rabbit_parameters.yaml' }
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        
+    
 
     Shared\Domain\IService\:
         autowire: true      # Automatically injects dependencies in your services.

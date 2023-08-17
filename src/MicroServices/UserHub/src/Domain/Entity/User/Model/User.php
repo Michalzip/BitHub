@@ -8,16 +8,12 @@ use UserService\Domain\Entity\Bid\Model\Bid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Shared\Infrastructure\Service\Auth\Auth;
 use Symfony\Component\Security\Core\User\UserInterface;
-use UserService\Domain\Entity\Transaction\Model\Transaction;
 
 #[ORM\Entity]
 class User implements UserInterface
 {
     #[OneToMany(targetEntity: Bid::class, mappedBy: 'user')]
     private $bids;
-
-    #[OneToMany(targetEntity: Transaction::class, mappedBy: 'user')]
-    private $transactions;
 
 
     public function __construct(
@@ -32,7 +28,6 @@ class User implements UserInterface
         private string $lastName
     ) {
         $this->bids = new ArrayCollection();
-        $this->transactions = new ArrayCollection();
 
     }
 

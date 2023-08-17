@@ -4,15 +4,18 @@ namespace AuctionService\Infrastructure\ApiPlatform\Resource;
 
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\ApiResource;
+use AuctionService\Application\Dto\AddAuctionDto;
+use AuctionService\Infrastructure\ApiPlatform\State\AddAuctionProcessor;
 
 #[ApiResource(
-    shortName: 'User Operation',
+    shortName: 'Auction Operation',
     operations: [
 
     new Post(
-        "/auction/price-suggestion",
-        openapiContext: ['summary' => 'the user proposes a price for the auction'],
-        //w
+        "/auction/add-auction",
+        openapiContext: ['summary' => 'create auction for users'],
+        input: AddAuctionDto::class,
+        processor: AddAuctionProcessor::class
     )
     ],
 )]

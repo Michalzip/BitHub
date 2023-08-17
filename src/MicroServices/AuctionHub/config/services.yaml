@@ -1,3 +1,5 @@
+imports:
+    - { resource: '../../../Shared/config/services.yaml' }
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.
 
@@ -19,6 +21,34 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+   
+    _instanceof:
+        Shared\Domain\IBus\ICommand\CommandHandlerInterface:
+          public: true
+          tags:
+            - { name: messenger.message_handler, bus: messenger.bus.command }
 
+        Shared\Domain\IBus\IQuery\QueryHandlerInterface:
+          public: true
+          tags:
+            - { name: messenger.message_handler, bus: messenger.bus.query }
+            
+    Shared\Infrastructure\Bus\Command\CommandBus:
+        arguments:
+          - '@messenger.bus.command'
+
+    Shared\Infrastructure\Bus\Query\QueryBus:
+        arguments:
+          - '@messenger.bus.query'
+            
+    Shared\Application\TokenListener\TokenExpirationListener:
+          public: true
+          # autowire: true      # Automatically injects dependencies in your services.
+          class: Shared\Application\TokenListener\TokenExpirationListener
+          tags:
+
+              - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_not_found, method: onJWTNotFound }
+              - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_authenticated, method: onAuthenticatedAccess }
+              - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_expired, method: onTokenExpires }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

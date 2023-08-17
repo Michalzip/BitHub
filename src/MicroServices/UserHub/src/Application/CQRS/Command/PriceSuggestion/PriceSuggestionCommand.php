@@ -6,9 +6,11 @@ use Shared\Domain\IBus\ICommand\CommandInterface;
 
 final class PriceSuggestionCommand implements CommandInterface
 {
-    public readonly int $price;
-    public function __construct(int $price)
+    public readonly string $auctionId;
+    public readonly float  $bidAmount;
+    public function __construct(string $auctionId, float $bidAmount)
     {
-        $this->price=$price;
+        $this->auctionId=$auctionId;
+        $this->bidAmount=$bidAmount;
     }
 }

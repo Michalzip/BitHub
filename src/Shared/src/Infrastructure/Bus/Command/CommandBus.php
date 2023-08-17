@@ -8,6 +8,7 @@ use Shared\Domain\IBus\ICommand\CommandInterface;
 use Shared\Domain\IBus\ICommand\CommandBusInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
+use Symfony\Component\Messenger\Stamp\HandledStamp;
 
 class CommandBus implements CommandBusInterface
 {
@@ -23,9 +24,13 @@ class CommandBus implements CommandBusInterface
     {
         try {
 
+            $envelope = $this->messageBus->dispatch($command);
+            /** @var HandledStamp $stamp */
+            $stamp = $envelope->last(HandledStamp::class);
+
+            return $stamp->getResult();
 
 
-            return $this->messageBus->dispatch($command);
 
         } catch (HandlerFailedException $e) {
             /** @var array{0: \Throwable} $exceptions */

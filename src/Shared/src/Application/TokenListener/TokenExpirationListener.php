@@ -3,6 +3,7 @@
 namespace Shared\Application\TokenListener;
 
 use Shared\Infrastructure\Service\Auth\Auth;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Shared\Infrastructure\Service\Redis\RedisClient;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -36,9 +37,11 @@ class TokenExpirationListener
 
             if ($this->tokenExpirationChecker->isTokenCloseToExpiration($this->payload)) {
 
+
                 $newToken =  $this->authenticationProvider->generateToken($user->getId(), $user->getEmail(), $user->getFirstName(), $user->getLastName());
 
                 $this->client->set('token', $newToken);
+
             }
         }
     }
