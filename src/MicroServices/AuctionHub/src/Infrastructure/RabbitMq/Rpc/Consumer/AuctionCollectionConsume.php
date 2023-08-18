@@ -26,7 +26,12 @@ class AuctionCollectionConsume extends Command
 
         $auctions  = $this->auctionRepository->findAll();
 
-        $response = new ConsumerResponse("success", $auctions);
+        $response = new ConsumerResponse("info", "not found any auctions");
+
+        if($auctions != null) {
+            $response = new ConsumerResponse("success", $auctions);
+        }
+
 
         $msg = new AMQPMessage(
             json_encode($response->toArray()),
